@@ -31,18 +31,6 @@ void ErrorCheck::error_close(){
 		"close"
 		);
 }
-//	void *mmap(void*, size_t, int, int, int, off_t);
-void ErrorCheck::error_mmap(){
-	cout << "mmapping..." << endl;
-	this->mem = mmap(NULL, this->st.st_size, PROT_READ, MAP_SHARED, this->fd, 0);
-	error_check(this->mem, "mmap");
-}
-
-void ErrorCheck::error_mmap(size_t size){
-	cout << "mmapping..." << endl;
-	this->mem = mmap(NULL, size, PROT_WRITE | PROT_READ, MAP_SHARED, this->fd, 0);
-	error_check(this->mem, "mmap");	
-}
 
 void ErrorCheck::error_stat(){
 	cout << "stating..." << endl;
@@ -61,6 +49,20 @@ void ErrorCheck::error_trnc(off_t fd_size){
 		"ftruncate"
 		);
 }
+
+//	void *mmap(void*, size_t, int, int, int, off_t);
+void ErrorCheck::error_mmap(){
+	cout << "mmapping..." << endl;
+	this->mem = mmap(NULL, this->st.st_size, PROT_READ, MAP_SHARED, this->fd, 0);
+	error_check(this->mem, "mmap");
+}
+
+void ErrorCheck::error_mmap(size_t size){
+	cout << "mmapping..." << endl;
+	this->mem = mmap(NULL, size, PROT_WRITE | PROT_READ, MAP_SHARED, this->fd, 0);
+	error_check(this->mem, "mmap");	
+}
+
 
 //	int madvise(void*, size_t, int);
 void ErrorCheck::error_advise(size_t mem_size){

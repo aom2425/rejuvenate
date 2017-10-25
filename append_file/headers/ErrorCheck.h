@@ -85,6 +85,8 @@ protected:
 	void error_check(void *argument, const char *message);
 
 private:
+	/*better way to implement is to create a struct,
+	and pass that struct as a parameter in each method*/
 	char *name;//		file name
 	int fd;//			file descriptor
 	struct stat st;//	holds metadata from fd
