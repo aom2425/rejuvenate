@@ -7,46 +7,41 @@ void Shell::run_command(char **args){
     else while (wait(&status) != -1);
 }
 
-void Shell::initial(){
-	printf("The \"exit\" command will exit shell.\n");
-	while(!kill){
-		char *input = readline(Convertions::convert_string_down(prompt));
-		add_history(input);
-		set_split_switch(input);
-		loop_split(multi_commands);
-//		commands = breakdown(input);
-//		check_command();
-	}
+void Shell::get_next_line(){
+	this->input = readline(Convertions::convert_string_down(prompt));
+	add_history(input);
 }
-void Shell::loop_split(vector<char*> vec){
-	if(vec.empty()) return;
-	set_split_switch(vec.data()[0]);
+vector<char*> clean_memory(vector<char*> vec){
 	vec.erase(vec.begin());
-	loop_split(vec);
+	return vec;
 }
 
-void Shell::set_split_switch(char *input){
-	if(strstr(input, ";")) this->multi_commands = breakdown(input, ";");
-	else if(strstr(input, "|")) this->pipes = breakdown(input, "|");
-	else if(strstr(input, ":")) this->path = breakdown(input, ":");
-	else this->commands = breakdown(input, DELIMS);
-}
-
-vector<char *> Shell::breakdown(char *input, const char *delim){
-	vector<char *> list;
-	char *split = strtok(input, delim);
-	while(split != NULL){
-		cout << split << endl;
-		list.push_back(split);
-		split = strtok(NULL, delim);
+void Shell::init(){
+	while(!kill){
+		cout << "kill loop" << endl;
+		vector<char*> container = InputHandler::split_controller(input);
+		while(!container.empty()){
+			cout << container.at(0) << endl;
+			vector<char*> item = InputHandler::split_controller(input);
+			while(!item.empty()){
+				cout << item.at(0) << endl;
+				cout << InputHandler::cmd_controller(item.at(0)) << endl;
+				item = clean_memory (item);
+			}
+			container = clean_memory(container);
+		}
+		get_next_line();
 	}
-	return list;
+}
+void Shell::set_essentials(char **cmds, vector<char*> vec){
+	cout << "run multi instrct" << endl;
+//	cmds = InputHandler::breakdown(vec.data()[0]).data();
+	check_command(cmds);
 }
 
-void Shell::check_command(){
-	char **commands_pointer = commands.data();
+void Shell::check_command(char **cmds){
 	ErrorCheck::exit_success(
-		!strcmp(commands_pointer[0], "exit"),
+		!strcmp(cmds[0], "exit"),
 		"Goodbye, till next time.\n"
 		);
 }

@@ -2,6 +2,7 @@
 
 #include "Convertions.h"
 #include "ErrorCheck.h"
+#include "InputHandler.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/types.h>
@@ -17,30 +18,31 @@ public:
 		if(!shell_instance) shell_instance = new Shell;
 		return shell_instance;
 	};
-	~ Shell(){};
+	~ Shell(){
+		delete [] shell_instance;
+	};
 	
 protected:
 	static Shell *shell_instance;
 	void die(){ kill = true; };
 	void setPrompt(string newPrompt){ prompt = newPrompt; };
 	void run_command(char **args);
-	void loop_split(vector<char*> vec);
-
+	void set_essentials(char **cmds, vector<char*> vec);
 private:
-	vector<char *> commands;
-	vector<char *> path;
-	vector<char *> pipes;
-	vector<char *> multi_commands;
 	string prompt;
 	bool kill;
+	char *input;
+	void init();
+	void get_next_line();
+	void check_command(char **cmds);
 
-	void initial();
-	void set_split_switch(char *input);
-	vector<char *> breakdown(char *input, const char *delim);
-	void check_command();
 	Shell(){ 
 		prompt= "\n>>> ";
 		kill = false; 
-		initial();	
+		printf("The \"exit\" command will exit shell.\n");
+		get_next_line();
+		init();
+			
 	};
 };
+
